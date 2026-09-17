@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -26,6 +27,9 @@ app.use(
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Server is running smoothly' });
 });
+
+// routes
+app.use('/api/v1/auth', authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
