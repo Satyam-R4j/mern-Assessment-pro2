@@ -5,7 +5,7 @@ const changelogSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, 'Title is required'],
+      required: true,
       trim: true,
     },
     slug: {
@@ -14,7 +14,7 @@ const changelogSchema = new mongoose.Schema(
     },
     contentMarkdown: {
       type: String,
-      required: [true, 'Content in markdown is required'],
+      required: true,
     },
     category: {
       type: String,
@@ -35,27 +35,25 @@ const changelogSchema = new mongoose.Schema(
       default: 'Draft',
     },
     reactions: {
-      redHeart: [{ type: String }],
-      partyPopper: [{ type: String }],
-      rocket: [{ type: String }],
+      redHeart: [String],
+      partyPopper: [String],
+      rocket: [String],
     },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// generate slug 
+// auto create slug from title
 changelogSchema.pre('save', function (next) {
-  if (!this.slug || this.isModified('title')) {
-    this.slug = slugify(this.title, { lower: true, strict: true }) + '-' + Date.now().toString().slice(-4);
+  if (this.isModified('title') || !this.slug) {
+    const baseSlug = slugify(this.title, { lower: true, strict: true });
+    this.slug = `${baseSlug}-${Math.floor(1000 + Math.random() * 9000)}`;
   }
   next();
 });
 
-const Changelog = mongoose.model('Changelog', changelogSchema);
-export default Changelog;
+export default mongoose.model('Changelog', changelogSchema);
