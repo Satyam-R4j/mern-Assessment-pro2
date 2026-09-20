@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { useAuth } from '../context/AuthContext';
-import { Search, RefreshCw, Layers, Sparkles, Wrench, Bug, X } from 'lucide-react';
+import { Search, RefreshCw, Layers, Sparkles, Wrench, Bug, X, Code2, ExternalLink } from 'lucide-react';
 
 const CATEGORIES: { label: string; value: ChangelogCategory | 'All'; icon: React.ComponentType<{ className?: string }> }[] = [
   { label: 'All Updates', value: 'All', icon: Layers },
@@ -64,6 +64,18 @@ export const Feed: React.FC = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!loading && window.location.hash) {
+      const targetId = window.location.hash.slice(1);
+      const el = document.getElementById(targetId);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+      }
+    }
+  }, [loading, items]);
+
   const handleReact = async (id: string, emojiType: ReactionType) => {
     if (!user) return;
 
@@ -116,9 +128,23 @@ export const Feed: React.FC = () => {
   return (
     <div className="container mx-auto max-w-4xl py-10 px-4 sm:px-6">
       <div className="text-center max-w-2xl mx-auto mb-10">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-3">
-          <Sparkles className="size-3.5" />
-          <span>Product Updates & Releases</span>
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary">
+            <Sparkles className="size-3.5" />
+            <span>Product Updates & Releases</span>
+          </div>
+
+          <a
+            href="http://localhost:5000/api/v1/changelog/feed"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border border-border/80 hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-colors"
+            title="Open Public JSON Syndication Feed"
+          >
+            <Code2 className="size-3.5 text-primary" />
+            <span>JSON Feed</span>
+            <ExternalLink className="size-3 opacity-60" />
+          </a>
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
           What's New in the App
