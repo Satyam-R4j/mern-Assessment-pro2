@@ -87,10 +87,7 @@ export const ChangelogCard: React.FC<ChangelogCardProps> = ({ item, onReact }) =
 
   return (
     <div className="relative pl-6 sm:pl-8 pb-12 last:pb-0 group" id={item.slug || item._id}>
-      {/* Vertical timeline line */}
       <div className="absolute left-[7px] sm:left-[11px] top-3 bottom-0 w-[2px] bg-border group-last:hidden" />
-
-      {/* Timeline indicator node */}
       <div className="absolute left-0 sm:left-1 top-2 size-4 rounded-full border-2 border-primary bg-background shadow-xs ring-4 ring-background" />
 
       <Card className="transition-all hover:shadow-md border-border/80">
@@ -186,7 +183,6 @@ export const ChangelogCard: React.FC<ChangelogCardProps> = ({ item, onReact }) =
         </CardContent>
 
         <CardFooter className="pt-2 border-t border-border/40 flex flex-wrap items-center justify-between gap-3 text-xs text-muted-foreground">
-          {/* Reaction Buttons */}
           <div className="flex items-center gap-1.5">
             {reactionsList.map((r) => {
               const count = item.reactions?.[r.type]?.length || 0;
@@ -212,7 +208,6 @@ export const ChangelogCard: React.FC<ChangelogCardProps> = ({ item, onReact }) =
             })}
           </div>
 
-          {/* Author info */}
           {item.author && (
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <User className="size-3.5" />

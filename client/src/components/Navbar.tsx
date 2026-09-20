@@ -1,16 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useWidget } from '../context/WidgetContext';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Sparkles, LayoutDashboard, LogOut, LogIn, UserPlus } from 'lucide-react';
 
-interface NavbarProps {
-  onOpenWidget?: () => void;
-  unreadCount?: number;
-}
-
-export const Navbar = ({ onOpenWidget, unreadCount = 0 }: NavbarProps) => {
+export const Navbar = () => {
   const { user, logout } = useAuth();
+  const { openWidget, unreadCount } = useWidget();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -43,22 +40,20 @@ export const Navbar = ({ onOpenWidget, unreadCount = 0 }: NavbarProps) => {
         </div>
 
         <div className="flex items-center gap-2.5">
-          {onOpenWidget && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onOpenWidget}
-              className="gap-1.5"
-            >
-              <Sparkles className="size-3.5 text-amber-500" />
-              <span>What's New</span>
-              {unreadCount > 0 && (
-                <Badge variant="destructive" size="sm" className="ml-1 px-1.5 py-0 h-4">
-                  {unreadCount}
-                </Badge>
-              )}
-            </Button>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={openWidget}
+            className="gap-1.5 cursor-pointer"
+          >
+            <Sparkles className="size-3.5 text-amber-500" />
+            <span>What's New</span>
+            {unreadCount > 0 && (
+              <Badge variant="destructive" size="sm" className="ml-1 px-1.5 py-0 h-4 text-[10px] font-bold">
+                {unreadCount}
+              </Badge>
+            )}
+          </Button>
 
           {user ? (
             <div className="flex items-center gap-2">

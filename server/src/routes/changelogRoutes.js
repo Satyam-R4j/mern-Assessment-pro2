@@ -10,16 +10,16 @@ import {
   updateChangelog,
   deleteChangelog,
 } from '../controllers/changelogController.js';
-import { protect, adminOnly } from '../middleware/authMiddleware.js';
+import { protect, adminOnly, optionalAuth } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // public endpoints
 router.get('/feed', getPublicFeed);
 router.get('/', getChangelogs);
-router.get('/unread-count', protect, getUnreadCount);
+router.get('/unread-count', optionalAuth, getUnreadCount);
 router.get('/slug/:slug', getChangelogBySlug);
-router.post('/:id/react', protect, toggleReaction);
+router.post('/:id/react', optionalAuth, toggleReaction);
 
 // admin CRUD endpoints
 router.get('/admin/all', protect, adminOnly, getAllAdminChangelogs);

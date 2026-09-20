@@ -38,3 +38,25 @@ export const adminOnly = (req, res, next) => {
     return res.status(403).json({ message: 'Access denied: Admin role required' });
   }
 };
+
+export const optionalAuth = async (req, res, next) => {
+  try {
+    let token = req.cookies.accessToken;
+
+    if (!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      token = req.headers.authorization.split(' ')[1];
+    }
+
+    if (token) {
+      const decoded = jwt.verify(
+        token,
+        process.env.JWT_ACCESS_SECRET || 'super_secret_access_key_123'
+      );
+      req.user = await User.findById(decoded.userId).select('-password');
+    }
+  } catch (err) {
+    // continue as guest
+  }
+  next();
+};
+

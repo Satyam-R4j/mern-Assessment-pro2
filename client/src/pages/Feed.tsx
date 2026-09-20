@@ -67,7 +67,6 @@ export const Feed: React.FC = () => {
   const handleReact = async (id: string, emojiType: ReactionType) => {
     if (!user) return;
 
-    // optimistic UI update
     setItems((prevItems) =>
       prevItems.map((item) => {
         if (item._id !== id) return item;
@@ -91,7 +90,6 @@ export const Feed: React.FC = () => {
 
     try {
       const res = await api.post(`/changelogs/${id}/react`, { emojiType });
-      // sync with server confirmed reactions list
       if (res.data?.reactions) {
         setItems((prevItems) =>
           prevItems.map((item) =>
@@ -100,8 +98,7 @@ export const Feed: React.FC = () => {
         );
       }
     } catch (err) {
-      console.error('Failed to submit reaction:', err);
-      // rollback on error
+      console.log('react err:', err);
       fetchChangelogs();
     }
   };
@@ -118,7 +115,6 @@ export const Feed: React.FC = () => {
 
   return (
     <div className="container mx-auto max-w-4xl py-10 px-4 sm:px-6">
-      {/* Header section */}
       <div className="text-center max-w-2xl mx-auto mb-10">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary mb-3">
           <Sparkles className="size-3.5" />
@@ -132,9 +128,7 @@ export const Feed: React.FC = () => {
         </p>
       </div>
 
-      {/* Filter and Search Bar Controls */}
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-10 pb-6 border-b border-border/60">
-        {/* Category Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5 p-1 bg-muted/60 rounded-xl border border-border/40">
           {CATEGORIES.map((cat) => {
             const Icon = cat.icon;
@@ -164,7 +158,6 @@ export const Feed: React.FC = () => {
           })}
         </div>
 
-        {/* Search Bar */}
         <div className="relative w-full md:w-72">
           <Input
             type="text"
@@ -186,7 +179,6 @@ export const Feed: React.FC = () => {
         </div>
       </div>
 
-      {/* Error state */}
       {error && (
         <Alert variant="error" className="mb-8">
           <AlertTitle>Error loading changelogs</AlertTitle>
@@ -200,7 +192,6 @@ export const Feed: React.FC = () => {
         </Alert>
       )}
 
-      {/* Loading Skeleton */}
       {loading ? (
         <div className="space-y-8 pl-6 sm:pl-8">
           {[1, 2, 3].map((n) => (
@@ -219,7 +210,6 @@ export const Feed: React.FC = () => {
           ))}
         </div>
       ) : items.length === 0 ? (
-        /* Empty State */
         <div className="text-center py-16 px-4 rounded-2xl border border-dashed border-border bg-card/50">
           <div className="size-12 rounded-full bg-muted flex items-center justify-center mx-auto mb-4 text-muted-foreground">
             <Layers className="size-6" />
@@ -244,7 +234,6 @@ export const Feed: React.FC = () => {
           )}
         </div>
       ) : (
-        /* Timeline Feed */
         <div className="relative mt-2">
           {items.map((item) => (
             <ChangelogCard key={item._id} item={item} onReact={handleReact} />
