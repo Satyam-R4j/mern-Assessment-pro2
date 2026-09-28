@@ -6,7 +6,9 @@ export interface User {
   name: string;
   email: string;
   role: 'admin' | 'user';
+  lastViewedChangelogDate?: string;
   lastViewedAt?: string;
+  isVerified?: boolean;
 }
 
 interface AuthContextType {
@@ -28,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const refreshUser = async () => {
     try {
       const res = await api.get('/auth/me');
-      setUser(res.data.data);
+      setUser(res.data.user || res.data.data?.user || res.data.data || null);
     } catch {
       setUser(null);
     } finally {
@@ -42,12 +44,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     const res = await api.post('/auth/login', { email, password });
-    setUser(res.data.data.user);
+    setUser(res.data.user || res.data.data?.user || res.data.data);
   };
 
   const signup = async (name: string, email: string, password: string) => {
     const res = await api.post('/auth/signup', { name, email, password });
-    setUser(res.data.data.user);
+    setUser(res.data.user || res.data.data?.user || res.data.data);
   };
 
   const logout = async () => {
@@ -61,7 +63,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const markViewed = async () => {
     try {
       const res = await api.post('/auth/mark-viewed');
-      setUser(res.data.data);
+      const timestamp = res.data.lastViewedChangelogDate;
+      if (timestamp) {
+        setUser((prev) =>
+          prev
+            ? { ...prev, lastViewedChangelogDate: timestamp, lastViewedAt: timestamp }
+            : null
+        );
+      }
     } catch (err) {
       console.log('mark viewed err:', err);
     }

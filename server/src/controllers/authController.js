@@ -26,18 +26,23 @@ export const signup = async (req, res) => {
       password,
       role: role === 'admin' ? 'admin' : 'user',
       verificationToken,
-      isVerified: false,
+      isVerified: true,
     });
 
+    // generate tokens & set cookies
+    const { refreshToken } = generateTokens(res, user._id);
+    user.refreshToken = refreshToken;
+    await user.save();
+
     res.status(201).json({
-      message: 'Signup successful! Please verify your email.',
-      verificationToken, // included for simulation & easy testing
+      message: 'Signup successful!',
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,
+        lastViewedChangelogDate: user.lastViewedChangelogDate,
       },
     });
   } catch (error) {
