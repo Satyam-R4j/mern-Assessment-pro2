@@ -12,6 +12,7 @@ export const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'user' | 'admin'>('user');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,7 +25,7 @@ export const Register = () => {
     setSubmitting(true);
 
     try {
-      await signup(name, email, password);
+      await signup(name, email, password, role);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || 'Failed to create account');
@@ -87,6 +88,19 @@ export const Register = () => {
                 required
                 minLength={6}
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="role">Account Role</Label>
+              <select
+                id="role"
+                value={role}
+                onChange={(e) => setRole(e.target.value as 'user' | 'admin')}
+                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              >
+                <option value="user" className="bg-background text-foreground">Standard User (Reader)</option>
+                <option value="admin" className="bg-background text-foreground">Admin (CMS & Release Management)</option>
+              </select>
             </div>
           </CardContent>
 
